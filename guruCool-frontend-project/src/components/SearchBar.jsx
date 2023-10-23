@@ -1,6 +1,6 @@
-import { Container, TextField, Section, Button, Heading} from '@radix-ui/themes'
+import { Container, TextField, Section, Button, Heading } from '@radix-ui/themes'
 import { MagnifyingGlassIcon } from '@radix-ui/react-icons'
-import React, {useState, useEffect} from 'react'
+import React, { useState, useEffect } from 'react'
 import RecipeItem from './util-components/RecipeItem'
 import AutoComplete from './util-components/AutoComplete'
 import RecipePage from './RecipePage'
@@ -17,7 +17,7 @@ const SearchBar = () => {
     const fetchAutoCompleteSuggestions = async (query) => {
         const api = `https://api.spoonacular.com/recipes/autocomplete?apiKey=41950ce5bf37481a9179e8ea4fd6f653&number=5&query=${query}`
         const response = await fetch(api)
-        const result  = await response.json()
+        const result = await response.json()
         setAutoCompletedSuggestion(result)
         setAutoCompleteAppear(true)
     }
@@ -26,9 +26,9 @@ const SearchBar = () => {
         const query = e.target.value
         setSearchBarVal(query)
 
-        if(typingTimer){clearTimeout(typingTimer)}
+        if (typingTimer) { clearTimeout(typingTimer) }
 
-        if (query.trim() !== ''){
+        if (query.trim() !== '') {
 
             const newTimer = setTimeout(() => {
                 // function call
@@ -47,6 +47,9 @@ const SearchBar = () => {
         const result = await response.json()
         setRecipePageProps(result)
         setShowRecipePage(true)
+        setSearchBarVal("")
+        setAutoCompletedSuggestion([])
+
     }
 
     const handleOnClickSearch = async () => {
@@ -55,7 +58,24 @@ const SearchBar = () => {
             const response = await fetch(api)
             const result = await response.json()
             setSearchedItems(result.results)
+            setSearchBarVal("")
+            setAutoCompletedSuggestion([])
         }
+    }
+
+    const handleOnClickBookMark = (id, title, img) => {
+        if (localStorage.getItem('recipe-app-fav')){
+            localStorage.setItem('recipe-app-fav', [...localStorage.getItem('recipe-app-fav'), [id, title, img]])
+        }
+        else {
+            localStorage.setItem('recipe-app-fav', [])
+            localStorage.setItem('recipe-app-fav', [...localStorage.getItem('recipe-app-fav'), [id, title, img]])
+        }
+    } 
+
+    const handleOnClickBack = () => {
+        setShowRecipePage(false)
+        setRecipePageProps({})
     }
 
     useEffect(() => {
@@ -79,7 +99,7 @@ const SearchBar = () => {
                             <TextField.Input placeholder="Search recipes…" />
                         </TextField.Root>
 
-                        {autoCompleteAppear && <AutoComplete result={autoCompletedSuggestions} handleClickACard={handleOnClickACard}/>}
+                        {autoCompleteAppear && <AutoComplete result={autoCompletedSuggestions} handleClickACard={handleOnClickACard} />}
 
                     </div>
                     <Button className='ms-1' variant='soft' onClick={handleOnClickSearch}>
@@ -89,15 +109,15 @@ const SearchBar = () => {
                 </Section>
 
                 {/* results */}
-            <Section className='flex flex-row items-center justify-center flex-wrap w-full'>
-                {searchedItems.length > 0 && searchedItems.map((elem) => {
-                    return <RecipeItem elem={elem} key={elem.id} handleClickACard={handleOnClickACard} />
-                })}
-                {/* <RecipeItem />
+                <Section className='flex flex-row items-center justify-center flex-wrap w-full'>
+                    {searchedItems.length > 0 && searchedItems.map((elem) => {
+                        return <RecipeItem elem={elem} key={elem.id} handleClickACard={handleOnClickACard} handleOnClickBookMark={handleOnClickBookMark} />
+                    })}
+                    {/* <RecipeItem />
                 <RecipeItem /> */}
-            </Section>
+                </Section>
             </Container>}
-            {showRecipePage && <RecipePage elem={recipePageProps}/>}
+            {showRecipePage && <RecipePage elem={recipePageProps} handleOnClickBack={handleOnClickBack} handleOnClickBookMark={handleOnClickBookMark}/>}
         </>
     )
 }

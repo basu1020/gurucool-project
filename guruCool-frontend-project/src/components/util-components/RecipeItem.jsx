@@ -1,10 +1,11 @@
 import React from 'react'
-import {Card, Inset, Text, Strong} from '@radix-ui/themes'
+import { Card, Inset, Text, Strong, Button } from '@radix-ui/themes'
+import { BookmarkFilledIcon } from '@radix-ui/react-icons'
 
 const RecipeItem = (props) => {
 
     return (
-        <Card size="3" style={{ maxWidth: 240 }} className='m-2' onClick={() => {props.handleClickACard(props.elem.id)}}>
+        <Card size="3" style={{ maxWidth: 240 }} className='m-2' onClick={() => { props.handleClickACard(props.elem.id) }}>
             <Inset clip="padding-box" side="top" pb="current">
                 <img
                     src={props.elem.image}
@@ -18,8 +19,13 @@ const RecipeItem = (props) => {
                     }}
                 />
             </Inset>
-            <Text as="p" size="3">
-                <Strong>{props.elem.title}</Strong> 
+            <Text as="p" size="3" className='flex flex-row w-full justify-between'>
+                <Strong>{props.elem.title}</Strong>
+                <Button onClick={(e) => {e.preventDefault
+                    props.handleOnClickBookMark(props.elem.id, props.elem.title, props.elem.image)
+                    }} variant='soft'>
+                    <BookmarkFilledIcon />
+                </Button>
             </Text>
         </Card>
     )
