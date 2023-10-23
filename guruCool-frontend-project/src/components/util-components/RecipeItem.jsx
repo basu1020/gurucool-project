@@ -2,19 +2,9 @@ import React from 'react'
 import {Card, Inset, Text, Strong} from '@radix-ui/themes'
 
 const RecipeItem = (props) => {
-    const setShowRecipePage = props.setShowRecipePage
-
-    // const handleOnClickACard = async () => {
-    //     // const api = `https://api.spoonacular.com/recipes/${props.elem.id}/summary?apiKey=41950ce5bf37481a9179e8ea4fd6f653`
-    //     // const response = await fetch(api)
-    //     // const result = await response.json()
-    //     // navigate("/recipe-page")
-    //     setShowRecipePage(true)
-    //     console.log("Haleluya")
-    // }
 
     return (
-        <Card size="3" style={{ maxWidth: 240 }} className='m-2' onClick={props.handleOnClickACard}>
+        <Card size="3" style={{ maxWidth: 240 }} className='m-2' onClick={() => {props.handleClickACard(props.elem.id)}}>
             <Inset clip="padding-box" side="top" pb="current">
                 <img
                     src={props.elem.image}

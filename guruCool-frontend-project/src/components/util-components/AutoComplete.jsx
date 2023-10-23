@@ -8,7 +8,7 @@ const AutoComplete = ( props ) => {
                 <Table.Root>
                     <Table.Body>
                         {props.result.map((elem) => {
-                            return <Table.Row className='hover:bg-red-400 hover:text-whtie' key={elem.id}>
+                            return <Table.Row className='hover:bg-red-400 hover:text-whtie' key={elem.id} onClick={() => {props.handleClickACard(elem.id)}}>
                                 <Table.Cell className='curson-pointer'>
                                     {elem.title}
                                 </Table.Cell>

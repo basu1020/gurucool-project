@@ -12,6 +12,7 @@ const SearchBar = () => {
     const [autoCompletedSuggestions, setAutoCompletedSuggestion] = useState([])
     const [searchedItems, setSearchedItems] = useState([])
     const [showRecipePage, setShowRecipePage] = useState(false)
+    const [recipePageProps, setRecipePageProps] = useState({})
 
     const fetchAutoCompleteSuggestions = async (query) => {
         const api = `https://api.spoonacular.com/recipes/autocomplete?apiKey=41950ce5bf37481a9179e8ea4fd6f653&number=5&query=${query}`
@@ -32,7 +33,7 @@ const SearchBar = () => {
             const newTimer = setTimeout(() => {
                 // function call
                 fetchAutoCompleteSuggestions(query)
-            }, 700)
+            }, 500)
             setTypingTimer(newTimer)
         } else {
             setAutoCompleteAppear(false)
@@ -40,13 +41,12 @@ const SearchBar = () => {
         }
     }
 
-    const handleOnClickACard = async () => {
-        // const api = `https://api.spoonacular.com/recipes/${props.elem.id}/summary?apiKey=41950ce5bf37481a9179e8ea4fd6f653`
-        // const response = await fetch(api)
-        // const result = await response.json()
-        // navigate("/recipe-page")
+    const handleOnClickACard = async (id) => {
+        const api = `https://api.spoonacular.com/recipes/${id}/summary?apiKey=41950ce5bf37481a9179e8ea4fd6f653`
+        const response = await fetch(api)
+        const result = await response.json()
+        setRecipePageProps(result)
         setShowRecipePage(true)
-        console.log("Haleluya")
     }
 
     const handleOnClickSearch = async () => {
@@ -54,13 +54,11 @@ const SearchBar = () => {
             const api = `https://api.spoonacular.com/recipes/complexSearch?apiKey=41950ce5bf37481a9179e8ea4fd6f653&query=${searchBarVal}&number=5`
             const response = await fetch(api)
             const result = await response.json()
-            console.log(result)
             setSearchedItems(result.results)
         }
     }
 
     useEffect(() => {
-        console.log("changed")
     }, [showRecipePage])
 
 
@@ -81,7 +79,7 @@ const SearchBar = () => {
                             <TextField.Input placeholder="Search recipes…" />
                         </TextField.Root>
 
-                        {autoCompleteAppear && <AutoComplete result={autoCompletedSuggestions}/>}
+                        {autoCompleteAppear && <AutoComplete result={autoCompletedSuggestions} handleClickACard={handleOnClickACard}/>}
 
                     </div>
                     <Button className='ms-1' variant='soft' onClick={handleOnClickSearch}>
@@ -93,13 +91,13 @@ const SearchBar = () => {
                 {/* results */}
             <Section className='flex flex-row items-center justify-center flex-wrap w-full'>
                 {searchedItems.length > 0 && searchedItems.map((elem) => {
-                    return <RecipeItem elem={elem} key={elem.id} handleClickOnCard={handleOnClickACard} />
+                    return <RecipeItem elem={elem} key={elem.id} handleClickACard={handleOnClickACard} />
                 })}
                 {/* <RecipeItem />
                 <RecipeItem /> */}
             </Section>
             </Container>}
-            {showRecipePage && <RecipePage setShowRecipePage={setShowRecipePage}/>}
+            {showRecipePage && <RecipePage elem={recipePageProps}/>}
         </>
     )
 }
